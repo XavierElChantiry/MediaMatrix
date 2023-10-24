@@ -19,7 +19,7 @@ items:
         terminationGracePeriodSeconds: 60
         containers:
           - name: databaseing-pod
-            image: birds7/database
+            image: $(YOUR_DOCKERHUB)/database
             imagePullPolicy: Always
             ports:
             - containerPort: 3306

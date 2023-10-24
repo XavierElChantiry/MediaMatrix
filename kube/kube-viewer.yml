@@ -19,7 +19,7 @@ items:
         terminationGracePeriodSeconds: 60
         containers:
           - name: view-pod
-            image: birds7/viewer
+            image: $(YOUR_DOCKERHUB)/viewer
             imagePullPolicy: Always
             ports:
             - containerPort: 5000
