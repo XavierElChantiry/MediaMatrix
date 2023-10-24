@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+{% block content %}
+<form action="/" method="GET">
+    <div class="input-group">
+        <div class="form-outline">
+                <input class="form-control" type="search" id="searcher" name="search" {% if search is defined %}value="{{search}}"{% endif %}>
+                <!-- <label class="form-label" for="searcher">Search</label> -->
+            </div>
+            <button class="btn btn-primary" type="submit">
+                <i class="fas fa-search">Search!</i>
+            </button>
+        </div>
+    </form>
+    {% if len is defined%}
+    <div >
+        <div class="list-group">
+            {% for i in range(0, len) %}
+                <a class="list-group-item list-group-item-action" href="/login?id={{videos[i][0]}}">{{videos[i][1]}}</a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

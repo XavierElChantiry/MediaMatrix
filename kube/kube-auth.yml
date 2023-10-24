@@ -1,0 +1,43 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: auther-pod
+    labels:
+      app: auther-pod
+  spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        app: auther-pod
+    template:
+      metadata:
+        labels:
+          app: auther-pod
+      spec:
+        terminationGracePeriodSeconds: 60
+        containers:
+          - name: auth-pod
+            image: birds7/auth
+            imagePullPolicy: Always
+            ports:
+            - containerPort: 5000
+            env:
+              - name: FILESYSTEM_PORT
+                value: "5002"
+
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: auth
+  spec:
+    type: LoadBalancer
+    ports:
+    - port: 5002
+      targetPort: 5000
+    selector:
+      app: auther-pod
+kind: List
+metadata: {}

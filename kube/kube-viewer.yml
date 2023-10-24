@@ -1,0 +1,80 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: viewer-pod
+    labels:
+      app: viewer-pod
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: viewer-pod
+    template:
+      metadata:
+        labels:
+          app: viewer-pod
+      spec:
+        terminationGracePeriodSeconds: 60
+        containers:
+          - name: view-pod
+            image: birds7/viewer
+            imagePullPolicy: Always
+            ports:
+            - containerPort: 5000
+            resources:
+              requests:
+                cpu: 4m
+                memory: 50Mi
+              limits:
+                cpu: 8m
+                memory: 75Mi
+            env:
+              - name: AUTH_HOSTNAME
+                value: $(AUTH_SERVICE_HOST)
+              - name: AUTH_PORT
+                value: $(AUTH_SERVICE_PORT)
+              - name: FILE_SYSTEM_HOSTNAME
+                value: $(FILESYSTEM_SERVICE_HOST)
+              - name: FILE_SYSTEM_PORT
+                value: $(FILESYSTEM_SERVICE_PORT)
+              - name: FLASK_ENV
+                value: development
+              - name: MYSQL_DATABASE
+                value: video
+              - name: MYSQL_HOSTNAME
+                value: $(DATABASE_SERVICE_HOST)
+              - name: MYSQL_PASSWORD
+                value: Password
+              - name: MYSQL_PORT
+                value: $(DATABASE_SERVICE_PORT)
+              - name: MYSQL_USER
+                value: Bobbeh
+
+- apiVersion: autoscaling/v1
+  kind: HorizontalPodAutoscaler
+  metadata:
+    name: viewer-autoscaler
+  spec:
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 75
+    scaleTargetRef:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: viewer-pod
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: viewer
+  spec:
+    type: LoadBalancer
+    ports:
+    - port: 5009
+      targetPort: 5000
+    selector:
+      app: viewer-pod
+kind: List
+metadata: {}

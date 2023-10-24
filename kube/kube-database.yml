@@ -1,0 +1,71 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: database-pod
+    labels:
+      app: database-pod
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: database-pod
+    template:
+      metadata:
+        labels:
+          app: database-pod
+      spec:
+        terminationGracePeriodSeconds: 60
+        containers:
+          - name: databaseing-pod
+            image: birds7/database
+            imagePullPolicy: Always
+            ports:
+            - containerPort: 3306
+            
+            env:
+                - name: MYSQL_DATABASE
+                  value: video
+                - name: MYSQL_PASSWORD
+                  value: Password
+                - name: MYSQL_ROOT_PASSWORD
+                  value: awodiuajowidjawjiodaoijo
+                - name: MYSQL_USER
+                  value: Bobbeh
+            resources: {}
+            volumeMounts:
+              - mountPath: /var/lib/mysql
+                name: stateful-db-vdeos
+        restartPolicy: Always
+        volumes:
+          - name: stateful-db-vdeos
+            persistentVolumeClaim:
+              claimName: stateful-db-vdeos
+  status: {}
+
+- kind: PersistentVolumeClaim
+  apiVersion: v1
+  metadata:
+    name: stateful-db-vdeos
+  spec:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 5Gi
+
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: database
+  spec:
+    type: LoadBalancer
+    ports:
+    - port: 3306
+      targetPort: 3306
+    selector:
+      app: database-pod
+kind: List
+metadata: {}

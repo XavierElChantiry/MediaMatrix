@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Upload{% endblock %}
+{% block content %}
+    {% if success %}
+    <div class="h-100 d-flex flex-column align-items-center justify-content-center">
+        <h1 class="p-2"> File successfully uploaded! </h1>
+        <h3 class="p-2"> Filename: {{ filename }}</h3>
+        <a class="p-2" href="{{ link }}">Video</a>
+    </div>
+    {% endif %}
+    <form action="/" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="vidTitle" class="form-label">Title:</label>
+          <input type="text" class="form-control" id="vidTitle" name="title" placeholder="Video Title">
+        </div>
+        <div class="mb-3">
+            <label for="formFile" class="form-label">Video File: (.mp4 only!)</label>
+            <input class="form-control" type="file" id="formFile" name="file">
+          </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+{% endblock %}

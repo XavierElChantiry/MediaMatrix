@@ -1,0 +1,90 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: filesystem-config
+  data:
+    filesystem.publicip: 127.0.0.1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: filesystem-pod
+    labels:
+      app: filesystem-pod
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: filesystem-pod
+    template:
+      metadata:
+        labels:
+          app: filesystem-pod
+      spec:
+        terminationGracePeriodSeconds: 60
+        containers:
+          - name: filesystem-pod-pod
+            image: birds7/filesystem
+            imagePullPolicy: Always
+            ports:
+            - containerPort: 5000
+            env:
+            - name: FILESYSTEM_PORT
+              value: "5001"
+            - name: FILESYSTEM_ROOT
+              value: /var/videos
+            - name: FILE_SYSTEM_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: filesystem-config
+                  key: filesystem.publicip
+            resources: {}
+            volumeMounts:
+              - mountPath: /var/videos
+                name: stateful-file-storage
+        restartPolicy: Always
+        volumes:
+          - name: stateful-file-storage
+            persistentVolumeClaim:
+              claimName: stateful-file-storage
+  status: {}
+
+
+- apiVersion: autoscaling/v1
+  kind: HorizontalPodAutoscaler
+  metadata:
+    name: filesystem-autoscaler
+  spec:
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 75
+    scaleTargetRef:
+      apiVersion: apps/v1
+      kind: Deployment
+      name: filesystem-pod
+
+- kind: PersistentVolumeClaim
+  apiVersion: v1
+  metadata:
+    name: stateful-file-storage
+  spec:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 5Gi
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: filesystem
+  spec:
+    type: LoadBalancer
+    ports:
+    - port: 5001
+      targetPort: 5000
+    selector:
+      app: filesystem-pod
+kind: List
+metadata: {}
