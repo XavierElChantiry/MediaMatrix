@@ -17,8 +17,9 @@ Upload and watch videos, with autoscaling and redundancy. Made using python and 
 - [Python](https://www.python.org/downloads/)
 
 ### Start Project
-To start this project, you must download it.
+
 Development with Docker-compose:
+
 Due to how docker does internal networking on containers sharing a virtual network some additonal changes must be made.
 1. Define and set variables listed in env.example
 1. Add `ENV FLASK_RUN_PORT="PORT_NUMBER_DEFINED_IN_ENV"` to the `Dockerfile` of each service before building
@@ -27,6 +28,7 @@ Due to how docker does internal networking on containers sharing a virtual netwo
 4. Login using credentials in `users.json`
 
 Hosting With Kubernetes:
+
 This should work out of the box
 1. Define and set variables listed in env.example
 2. Run `docker compose build` 
