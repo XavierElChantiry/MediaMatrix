@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if title is defined %}
+        {{ title }}
+    {% else %}
+        Videos - Nothing
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+{% if src is defined %}
+<div class="h-100 d-flex align-items-center justify-content-center">
+    <video controls >
+        <source src="{{src}}" type="video/mp4">
+    </video>
+</div>
+{% else %}
+<h1>No Video Source Found</h1>
+<a href="/">Click here to go back to searching</a>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,62 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: upload-pod
+    labels:
+      app: upload-pod
+  spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        app: upload-pod
+    template:
+      metadata:
+        labels:
+          app: upload-pod
+      spec:
+        terminationGracePeriodSeconds: 60
+        containers:
+          - name: uploading-pod
+            image: birds7/upload
+            imagePullPolicy: Always
+            ports:
+            - containerPort: 5000
+            env:
+            - name: AUTH_HOSTNAME
+              value: $(AUTH_SERVICE_HOST)
+            - name: AUTH_PORT
+              value: $(AUTH_SERVICE_PORT)
+            - name: FILE_SYSTEM_HOSTNAME
+              value: $(FILESYSTEM_SERVICE_HOST)
+            - name: FILE_SYSTEM_PORT
+              value: $(FILESYSTEM_SERVICE_PORT) 
+            - name: MYSQL_DATABASE
+              value: video
+            - name: MYSQL_HOSTNAME
+              value: $(DATABASE_SERVICE_HOST)
+            - name: MYSQL_PASSWORD
+              value: Password
+            - name: MYSQL_PORT
+              value: $(DATABASE_SERVICE_PORT)
+            - name: MYSQL_USER
+              value: Bobbeh
+
+
+
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: upload
+  spec:
+    type: LoadBalancer
+    ports:
+    - port: 5000
+      targetPort: 5000
+    selector:
+      app: upload-pod
+kind: List
+metadata: {}
+
