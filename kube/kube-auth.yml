@@ -19,7 +19,7 @@ items:
         terminationGracePeriodSeconds: 60
         containers:
           - name: auth-pod
-            image: birds7/auth
+            image: $(YOUR_DOCKERHUB)/auth
             imagePullPolicy: Always
             ports:
             - containerPort: 5000

@@ -19,7 +19,7 @@ items:
         terminationGracePeriodSeconds: 60
         containers:
           - name: uploading-pod
-            image: birds7/upload
+            image: $(YOUR_DOCKERHUB)/upload
             imagePullPolicy: Always
             ports:
             - containerPort: 5000
